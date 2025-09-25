@@ -1,4 +1,4 @@
-name: Bild Deploy Pipeline
+эname: Bild Deploy Pipeline
 
 
 on:
@@ -8,8 +8,8 @@ on:
     branches: [ master, develop ]
 
 env:
-  SERVER_IP: 5.129.250.92
-  DEPLOY_USER: root
+  SERVER_IP: '5.129.250.92'
+  DEPLOY_USER: 'root'
   key: ${{ secrets.SSH_PRIVATE_KEY }}
   DOCKER_REGISTRY: ghcr.io
   DOCKER_IMAGE_NAME: ${{ github.repository }}
