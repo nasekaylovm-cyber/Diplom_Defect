@@ -50,27 +50,18 @@ jobs:
     name: Deploy to Server
     needs: build
     runs-on: self-hosted
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     steps:
-      - uses: actions/checkout@v4
+      - name: Copy docker-compose to server
+        run: |
+          scp -o StrictHostKeyChecking=no docker-compose.yml ${{ env.DEPLOY_USER }}@${{ env.SERVER_IP }}:/root/
       
-      - name: Deploy to server
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: 5.129.250.92
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script_timeout: 10m
-          script: |
-            cd /opt/
-            rm -rf django-DefectDojo
-
-            git clone https://github.com/DefectDojo/django-DefectDojo
-            
-            cd django-DefectDojo
-
-      - name: Initialize
-        timeout-minutes: 10
-        run: docker compose up --no-deps --exit-code-from initializer initializer
-        env:
-          DJANGO_VERSION: ${{ matrix.os }}
-          NGINX_VERSION: alpine
+      - name: Deploy with docker-compose
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ env.DEPLOY_USER }}@${{ env.SERVER_IP }} << 'EOF'
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.DOCKER_REGISTRY }} -u ${{ github.actor }} --password-stdin
+          docker-compose pull
+          docker-compose up -d
+          docker image prune -f
+          echo "✓ Deployment completed successfully"
+          EOF
