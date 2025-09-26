@@ -17,7 +17,7 @@ jobs:
       with:
         host: 5.129.250.92
         username: root
-        secrets: ${{ secrets.SSH_PRIVATE_KEY }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           cd /opt
           if [ -d "django-DefectDojo" ]; then
