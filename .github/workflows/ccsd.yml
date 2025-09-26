@@ -38,3 +38,9 @@ jobs:
           sleep 1500
           docker compose logs initializer | grep "Admin password:"
           sleep 1500
+
+          timeout: 30s
+          
+        command_timeout: 10m
+        sync: false
+        use_insecure_cipher: false
