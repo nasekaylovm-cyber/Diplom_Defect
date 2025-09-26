@@ -1,4 +1,4 @@
-name: Deploy
+name: CD-Deploy
 
 on:
   push:
@@ -20,9 +20,22 @@ jobs:
     steps:
       - name: Deploy with docker-compose
         run: |
+          cd /opt
+          if [ -d "django-DefectDojo" ]; then
+            rm -rf django-DefectDojo
+            echo "Existing project directory removed"
+          fi
+          sleep 300
+          mkdir django-DefectDojo
+          echo "New project directory created"
           git clone https://github.com/DefectDojo/django-DefectDojo
           cd django-DefectDojo
+          sleep 1000
           ./docker/docker-compose-check.sh
+          sleep 100
           docker compose build
+          sleep 1500
           docker-compose up -d
+          sleep 1500
           docker compose logs initializer | grep "Admin password:"
+          sleep 1500
