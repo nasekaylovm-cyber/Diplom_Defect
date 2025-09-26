@@ -11,6 +11,7 @@ jobs:
   deploy:
     name: Deploy to Server
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
     - name: Connect SSH server
       uses: appleboy/ssh-action@v0.1.7
@@ -46,8 +47,3 @@ jobs:
           
           docker compose logs initializer | grep "Admin password:"
           
-          timeout: 3600s
-          
-        command_timeout: 10m
-        sync: false
-        use_insecure_cipher: false
