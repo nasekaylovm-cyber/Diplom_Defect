@@ -6,19 +6,18 @@ on:
   pull_request:
     branches: [ master, develop ]
 
-env:
-  SERVER_IP: 5.129.250.92
-  DEPLOY_USER: root
-  key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-
 jobs:
   
   deploy:
     name: Deploy to Server
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
-      - name: Deploy with docker-compose
+    - name: Connect SSH server
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: 5.129.250.92
+        username: root
+        password: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           cd /opt
           if [ -d "django-DefectDojo" ]; then
